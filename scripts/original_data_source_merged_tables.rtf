@@ -1,0 +1,87 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2865
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;\red22\green21\blue22;\red246\green246\blue246;}
+{\*\expandedcolortbl;;\cssrgb\c11373\c10980\c11373;\cssrgb\c97255\c97255\c97255;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww11520\viewh8400\viewkind0
+\deftab720
+\pard\pardeftab720\partightenfactor0
+
+\f0\fs30 \cf2 \cb3 \expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 WITH\
+\pard\pardeftab720\partightenfactor0
+\cf2 \
+\pard\pardeftab720\partightenfactor0
+\cf2 sessions_2023 AS (\
+\'a0\'a0SELECT *\
+\'a0\'a0FROM sessions s\
+\'a0\'a0WHERE s.session_start > '2023-01-04'\
+),\
+\pard\pardeftab720\partightenfactor0
+\cf2 \
+\pard\pardeftab720\partightenfactor0
+\cf2 filtered_users AS (\
+\'a0\'a0SELECT\
+\'a0\'a0\'a0\'a0user_id,\'a0 -- Select user ID for grouping\
+\'a0\'a0\'a0\'a0COUNT(*) AS session_count\
+\'a0\'a0FROM sessions_2023 s\
+\'a0\'a0GROUP BY user_id\
+\'a0\'a0HAVING COUNT(*) > 7\
+\pard\pardeftab720\partightenfactor0
+\cf2 \
+\pard\pardeftab720\partightenfactor0
+\cf2 ),\
+\pard\pardeftab720\partightenfactor0
+\cf2 \
+\pard\pardeftab720\partightenfactor0
+\cf2 session_base AS (\
+\'a0\'a0SELECT\
+\'a0\'a0\'a0\'a0-- Session-level data\
+\'a0\'a0\'a0\'a0s.session_id,\
+\'a0\'a0\'a0\'a0s.user_id,\
+\'a0\'a0\'a0\'a0s.trip_id,\
+\'a0\'a0\'a0\'a0s.session_start, s.session_end,\
+\'a0\'a0\'a0\'a0s.page_clicks,\
+\'a0\'a0\'a0\'a0s.flight_discount, s.flight_discount_amount,\
+\'a0\'a0\'a0\'a0s.hotel_discount, s.hotel_discount_amount,\
+\'a0\'a0\'a0\'a0s.flight_booked, s.hotel_booked,\
+\'a0\'a0\'a0\'a0s.cancellation,\
+\pard\pardeftab720\partightenfactor0
+\cf2 \
+\pard\pardeftab720\partightenfactor0
+\cf2 \'a0\'a0\'a0\'a0-- User-level data\
+\'a0\'a0\'a0\'a0u.birthdate, u.gender, u.married, u.has_children,\
+\'a0\'a0\'a0\'a0u.home_country, u.home_city, u.home_airport,\
+\'a0\'a0\'a0\'a0u.home_airport_lat, u.home_airport_lon,\
+\'a0\'a0\'a0\'a0u.sign_up_date,\
+\pard\pardeftab720\partightenfactor0
+\cf2 \
+\pard\pardeftab720\partightenfactor0
+\cf2 \'a0\'a0\'a0\'a0-- Flight-level data\
+\'a0\'a0\'a0\'a0f.origin_airport, f.destination, f.destination_airport,\
+\'a0\'a0\'a0\'a0f.seats, f.return_flight_booked,\
+\'a0\'a0\'a0\'a0f.departure_time, f.return_time,\
+\'a0\'a0\'a0\'a0f.checked_bags, f.trip_airline,\
+\'a0\'a0\'a0\'a0f.destination_airport_lat, f.destination_airport_lon,\
+\'a0\'a0\'a0\'a0f.base_fare_usd,\
+\pard\pardeftab720\partightenfactor0
+\cf2 \
+\pard\pardeftab720\partightenfactor0
+\cf2 \'a0\'a0\'a0\'a0-- Hotel-level data\
+\'a0\'a0\'a0\'a0h.hotel_name, h.nights, h.rooms,\
+\'a0\'a0\'a0\'a0h.check_in_time, h.check_out_time,\
+\'a0\'a0\'a0\'a0h.hotel_per_room_usd AS hotel_price_per_room_night_usd\
+\pard\pardeftab720\partightenfactor0
+\cf2 \
+\pard\pardeftab720\partightenfactor0
+\cf2 \'a0\'a0FROM sessions_2023 s\'a0 -- HERE WE USE THE FIRST TEMPORAY TABLE CREATED BEFORE\
+\'a0\'a0INNER JOIN users u ON s.user_id = u.user_id\
+\'a0\'a0LEFT JOIN flights f ON s.trip_id = f.trip_id\
+\'a0\'a0LEFT JOIN hotels h ON s.trip_id = h.trip_id\
+\'a0\'a0WHERE s.user_id IN (SELECT user_id FROM filtered_users)\'a0 -- HERE WE USE THE SECOND TEMPORARY TABLE CREATED BEFORE\
+)\
+\pard\pardeftab720\partightenfactor0
+\cf2 \
+\
+\pard\pardeftab720\partightenfactor0
+\cf2 SELECT *\
+FROM session_base}

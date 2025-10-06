@@ -1,0 +1,265 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2865
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fmodern\fcharset0 Courier;}
+{\colortbl;\red255\green255\blue255;\red15\green112\blue1;\red255\green255\blue255;\red0\green0\blue0;
+\red144\green1\blue18;\red86\green65\blue25;}
+{\*\expandedcolortbl;;\cssrgb\c0\c50196\c0;\cssrgb\c100000\c100000\c100000;\cssrgb\c0\c0\c0;
+\cssrgb\c63922\c8235\c8235;\cssrgb\c41569\c32157\c12941;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww11520\viewh8400\viewkind0
+\deftab720
+\pard\pardeftab720\partightenfactor0
+
+\f0\fs30 \cf2 \cb3 \expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 # Load Engineered Dataset ---\cf0 \cb1 \strokec4 \
+\
+\pard\pardeftab720\partightenfactor0
+\cf0 \cb3 query = \cf5 \strokec5 """\cf0 \cb1 \strokec4 \
+\pard\pardeftab720\partightenfactor0
+\cf5 \cb3 \strokec5 WITH\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5 sessions_2023 AS (\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5   SELECT *\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5   FROM sessions s\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5   WHERE s.session_start > '2023-01-04'\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5 ),\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5 filtered_users AS (\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5   SELECT\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5     user_id,\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5     COUNT(*) AS session_count\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5   FROM sessions_2023 s\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5   GROUP BY user_id\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5   HAVING COUNT(*) > 7\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5 )\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5 ,\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5 session_base AS (\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5   SELECT\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5     s.session_id,\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5     s.user_id,\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5     s.trip_id,\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5     s.session_start, s.session_end,\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5     s.page_clicks,\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5     s.flight_discount, s.flight_discount_amount,\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5     s.hotel_discount, s.hotel_discount_amount,\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5     s.flight_booked, s.hotel_booked,\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5     s.cancellation,\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5     u.birthdate, u.gender, u.married, u.has_children,\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5     u.home_country, u.home_city, u.home_airport,\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5     u.home_airport_lat, u.home_airport_lon,\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5     u.sign_up_date,\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5     f.origin_airport, f.destination, f.destination_airport,\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5     f.seats, f.return_flight_booked,\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5     f.departure_time, f.return_time,\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5     f.checked_bags, f.trip_airline,\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5     f.destination_airport_lat, f.destination_airport_lon,\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5     f.base_fare_usd,\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5     h.hotel_name, h.nights, h.rooms,\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5     h.check_in_time, h.check_out_time,\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5     h.hotel_per_room_usd AS hotel_price_per_room_night_usd\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5   FROM sessions_2023 s\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5   INNER JOIN users u ON s.user_id = u.user_id\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5   LEFT JOIN flights f ON s.trip_id = f.trip_id\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5   LEFT JOIN hotels h ON s.trip_id = h.trip_id\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5   WHERE s.user_id IN (SELECT user_id FROM filtered_users)\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5 ),\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5 user_agg_features AS (\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5   SELECT\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5     sb.user_id as user,\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5     --\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5     COUNT(DISTINCT sb.session_id) AS total_sessions,\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5     --SUM(sb.page_clicks) AS three,\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5     AVG(sb.page_clicks) AS avg_click_per_sesssion,\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5     SUM(CASE WHEN sb.flight_booked = TRUE AND sb.cancellation = FALSE THEN 1 ELSE 0 END) AS flights_booked_success,\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5     SUM(CASE WHEN sb.hotel_booked = TRUE AND sb.cancellation = FALSE THEN 1 ELSE 0 END) AS hotels_booked_success,\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5     SUM(CASE WHEN sb.cancellation = TRUE THEN 1 ELSE 0 END) AS cancellations_count,\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5     SUM(CASE WHEN sb.trip_id IS NOT NULL THEN 1 ELSE 0 END) AS trip_touched,\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5     AVG(CASE WHEN sb.flight_discount = TRUE AND sb.cancellation = FALSE THEN sb.flight_discount_amount ELSE NULL END) AS avg_flight_discount_amount,\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5     AVG(CASE WHEN sb.hotel_discount = TRUE AND sb.cancellation = FALSE THEN sb.hotel_discount_amount ELSE NULL END) AS avg_hotel_discount_amount,\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5     AVG(CASE WHEN sb.flight_booked = TRUE AND sb.cancellation = FALSE THEN sb.base_fare_usd ELSE NULL END) AS avg_flight_base_fare_usd,\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5     AVG(CASE WHEN sb.hotel_booked = TRUE AND sb.cancellation = FALSE THEN sb.hotel_price_per_room_night_usd ELSE NULL END) AS avg_hotel_price_per_room_night_usd,\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5     AVG(CASE WHEN sb.hotel_booked = TRUE AND sb.cancellation = FALSE THEN sb.nights ELSE NULL END) AS avg_hotel_night,\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5     COUNT(DISTINCT CASE WHEN sb.flight_booked = TRUE AND sb.cancellation = FALSE THEN sb.trip_airline ELSE NULL END) AS distinct_airlines_used,\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5     MAX(sb.birthdate) AS birthdate,\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5     MAX(sb.gender) AS gender,\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5     BOOL_OR(sb.married) AS is_married,\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5     BOOL_OR(sb.has_children) AS has_children,\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5     MAX(sb.home_country) AS home_country,\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5     MAX(sb.home_city) AS home_city,\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5     MAX(sb.home_airport) AS home_airport,\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5     MAX(sb.home_airport_lat) AS home_airport_lat,\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5     MAX(sb.home_airport_lon) AS home_airport_lon,\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5     MAX(sb.sign_up_date) AS sign_up_date,\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5     -- Added destination column\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5     MAX(sb.destination) AS last_destination\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5     FROM session_base sb\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5     GROUP BY sb.user_id\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5 )\cf0 \cb1 \strokec4 \
+\
+\
+\cf5 \cb3 \strokec5 ,\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5 airline_pref AS (\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5   SELECT user_id, trip_airline, cnt,\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5          ROW_NUMBER() OVER (PARTITION BY user_id ORDER BY cnt DESC, trip_airline) AS rn\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5   FROM (\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5     SELECT sb.user_id, sb.trip_airline, COUNT(*) AS cnt\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5     FROM session_base sb\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5     WHERE sb.flight_booked = TRUE\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5       AND sb.cancellation = FALSE\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5       AND sb.trip_airline IS NOT NULL\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5     GROUP BY sb.user_id, sb.trip_airline\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5   ) t\cf0 \cb1 \strokec4 \
+\
+\cf5 \cb3 \strokec5 ),\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5 dest_pref AS (\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5   SELECT user_id, destination_airport, cnt,\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5          ROW_NUMBER() OVER (PARTITION BY user_id ORDER BY cnt DESC, destination_airport) AS rn\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5   FROM (\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5     SELECT sb.user_id, sb.destination_airport, COUNT(*) AS cnt\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5     FROM session_base sb\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5     WHERE sb.destination_airport IS NOT NULL\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5     GROUP BY sb.user_id, sb.destination_airport\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5   ) t\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5 )\cf0 \cb1 \strokec4 \
+\
+\cf5 \cb3 \strokec5 ,\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5 engagement AS (\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5   SELECT\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5     sb.user_id,\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5     -- average session duration in minutes\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5     AVG(EXTRACT(EPOCH FROM (sb.session_end - sb.session_start)) / 60.0) AS avg_session_duration_min,\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5     -- first/last active month in your cohort window\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5     DATE_TRUNC('month', MIN(sb.session_start)) AS first_active_month,\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5     DATE_TRUNC('month', MAX(sb.session_start)) AS last_active_month,\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5     -- number of active calendar months (inclusive)\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5     (\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5       (DATE_PART('year', DATE_TRUNC('month', MAX(sb.session_start))) * 12\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5        + DATE_PART('month', DATE_TRUNC('month', MAX(sb.session_start))))\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5       -\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5       (DATE_PART('year', DATE_TRUNC('month', MIN(sb.session_start))) * 12\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5        + DATE_PART('month', DATE_TRUNC('month', MIN(sb.session_start))))\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5       + 1\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5     )::int AS active_months\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5   FROM session_base sb\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5   GROUP BY sb.user_id\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5 )\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5 ,\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5 travel_style AS (\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5   SELECT\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5     sb.user_id,\cf0 \cb1 \strokec4 \
+\
+\cf5 \cb3 \strokec5     -- Flight style\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5     AVG(CASE WHEN sb.flight_booked = TRUE AND sb.cancellation = FALSE\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5              THEN sb.checked_bags END) AS avg_checked_bags,\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5     AVG(CASE WHEN sb.flight_booked = TRUE AND sb.cancellation = FALSE\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5              THEN sb.seats END) AS avg_seats,\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5     AVG(CASE WHEN sb.flight_booked = TRUE AND sb.cancellation = FALSE\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5              AND sb.return_time IS NOT NULL AND sb.departure_time IS NOT NULL\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5              THEN EXTRACT(EPOCH FROM (sb.return_time - sb.departure_time)) / 86400.0 END)\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5              AS avg_trip_length_days,\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5     (\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5       SUM(CASE WHEN sb.flight_booked = TRUE AND sb.cancellation = FALSE AND sb.return_flight_booked = TRUE THEN 1 ELSE 0 END)::numeric\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5       / NULLIF(SUM(CASE WHEN sb.flight_booked = TRUE AND sb.cancellation = FALSE THEN 1 ELSE 0 END)::numeric, 0)\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5     ) AS return_flight_ratio,\cf0 \cb1 \strokec4 \
+\
+\cf5 \cb3 \strokec5     -- Hotel style\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5     AVG(CASE WHEN sb.hotel_booked = TRUE AND sb.cancellation = FALSE\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5              THEN sb.rooms END) AS avg_rooms_per_booking,\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5     (\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5       SUM(CASE WHEN sb.hotel_booked = TRUE AND sb.cancellation = FALSE THEN 1 ELSE 0 END)::numeric\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5       / NULLIF(SUM(CASE WHEN sb.trip_id IS NOT NULL THEN 1 ELSE 0 END)::numeric, 0)\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5     ) AS hotel_booking_ratio,\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5     AVG(CASE WHEN sb.hotel_booked = TRUE AND sb.cancellation = FALSE\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5              AND sb.check_in_time IS NOT NULL\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5              THEN EXTRACT(EPOCH FROM (sb.check_in_time - sb.session_start)) / 86400.0 END)\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5              AS avg_checkin_gap_days\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5   FROM session_base sb\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5   GROUP BY sb.user_id\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5 )\cf0 \cb1 \strokec4 \
+\
+\cf5 \cb3 \strokec5 ,\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5 value_signals AS (\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5   SELECT\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5     sb.user_id,\cf0 \cb1 \strokec4 \
+\
+\cf5 \cb3 \strokec5     -- kept bookings\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5     SUM(CASE WHEN sb.flight_booked = TRUE AND sb.cancellation = FALSE THEN 1 ELSE 0 END) AS kept_flights,\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5     SUM(CASE WHEN sb.hotel_booked  = TRUE AND sb.cancellation = FALSE THEN 1 ELSE 0 END) AS kept_hotels,\cf0 \cb1 \strokec4 \
+\
+\cf5 \cb3 \strokec5     -- discounts used on kept bookings\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5     SUM(CASE WHEN sb.flight_booked = TRUE AND sb.cancellation = FALSE AND sb.flight_discount = TRUE THEN 1 ELSE 0 END) AS kept_flight_discounts,\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5     SUM(CASE WHEN sb.hotel_booked  = TRUE AND sb.cancellation = FALSE AND sb.hotel_discount  = TRUE THEN 1 ELSE 0 END) AS kept_hotel_discounts,\cf0 \cb1 \strokec4 \
+\
+\cf5 \cb3 \strokec5     -- any trip row\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5     SUM(CASE WHEN sb.trip_id IS NOT NULL THEN 1 ELSE 0 END) AS trips_touched\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5   FROM session_base sb\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5   GROUP BY sb.user_id\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5 )\cf0 \cb1 \strokec4 \
+\
+\
+\
+\cf5 \cb3 \strokec5 SELECT\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5   uaf.*,\cf0 \cb1 \strokec4 \
+\
+\cf5 \cb3 \strokec5   -- Step 1: derived\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5   CASE WHEN uaf.birthdate IS NOT NULL\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5        THEN DATE_PART('year', age(CURRENT_DATE, uaf.birthdate))::int END AS age_years,\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5   CASE WHEN uaf.sign_up_date IS NOT NULL\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5        THEN (CURRENT_DATE - uaf.sign_up_date)::int END AS tenure_days,\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5   ((uaf.flights_booked_success + uaf.hotels_booked_success)::numeric\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5     / NULLIF(uaf.total_sessions::numeric, 0)) AS conversion_rate_per_session,\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5   (uaf.cancellations_count::numeric\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5     / NULLIF((uaf.flights_booked_success + uaf.hotels_booked_success)::numeric, 0)) AS cancellation_rate_on_bookings,\cf0 \cb1 \strokec4 \
+\
+\cf5 \cb3 \strokec5   -- Step 2 (if you added it):\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5   ap.trip_airline        AS preferred_airline,\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5   dp.destination_airport AS preferred_destination,\cf0 \cb1 \strokec4 \
+\
+\cf5 \cb3 \strokec5   -- Step 3 (new):\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5   eng.avg_session_duration_min,\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5   (uaf.total_sessions::numeric / NULLIF(eng.active_months::numeric, 0)) AS sessions_per_month,\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5   -- Step 4 (new): Travel style\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5   ts.avg_trip_length_days,\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5   ts.return_flight_ratio,\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5   ts.avg_checked_bags,\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5   ts.avg_seats,\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5   ts.avg_rooms_per_booking,\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5   ts.hotel_booking_ratio,\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5   ts.avg_checkin_gap_days,\cf0 \cb1 \strokec4 \
+\
+\cf5 \cb3 \strokec5   -- Step 5 (new): Value & promo\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5   (\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5     (vs.kept_flight_discounts + vs.kept_hotel_discounts)::numeric\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5     / NULLIF( (vs.kept_flights + vs.kept_hotels)::numeric, 0)\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5   ) AS promo_responsiveness,\cf0 \cb1 \strokec4 \
+\
+\cf5 \cb3 \strokec5   (\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5     (vs.kept_flights + vs.kept_hotels)::numeric\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5     / NULLIF( vs.trips_touched::numeric, 0)\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5   ) AS loyalty_index,\cf0 \cb1 \strokec4 \
+\
+\cf5 \cb3 \strokec5   -- Optional flags (tune thresholds as you like)\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5   (CASE WHEN (uaf.cancellations_count::numeric\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5               / NULLIF((uaf.flights_booked_success + uaf.hotels_booked_success)::numeric, 0)) > 0.3\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5         THEN TRUE END) AS is_high_canceller,\cf0 \cb1 \strokec4 \
+\
+\cf5 \cb3 \strokec5   (CASE WHEN (uaf.flights_booked_success + uaf.hotels_booked_success) >= 3 THEN TRUE END) AS is_multi_booker,\cf0 \cb1 \strokec4 \
+\
+\cf5 \cb3 \strokec5   (CASE WHEN uaf.has_children OR uaf.is_married THEN TRUE END) AS is_family_traveler\cf0 \cb1 \strokec4 \
+\
+\
+\cf5 \cb3 \strokec5 FROM user_agg_features uaf\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5 LEFT JOIN airline_pref ap ON ap.user_id = uaf.user AND ap.rn = 1         -- keep if Step 2 present\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5 LEFT JOIN dest_pref    dp ON dp.user_id = uaf.user AND dp.rn = 1         -- keep if Step 2 present\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5 LEFT JOIN engagement   eng ON eng.user_id = uaf.user\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5 LEFT JOIN travel_style ts ON ts.user_id = uaf.user\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5 LEFT JOIN value_signals vs ON vs.user_id = uaf.user\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5 ORDER BY uaf.user;\cf0 \cb1 \strokec4 \
+\cf5 \cb3 \strokec5 """\cf0 \cb1 \strokec4 \
+\
+\pard\pardeftab720\partightenfactor0
+\cf2 \cb3 \strokec2 # Just a test to confirm connection and table\cf0 \cb1 \strokec4 \
+\pard\pardeftab720\partightenfactor0
+\cf0 \cb3 test_df = sql_to_df(query)\cb1 \
+\pard\pardeftab720\partightenfactor0
+\cf6 \cb3 \strokec6 print\cf0 \strokec4 (\cf5 \strokec5 "Preview:"\cf0 \strokec4 )\cb1 \
+\pard\pardeftab720\partightenfactor0
+\cf0 \cb3 display(test_df.head())\cb1 \
+\cb3 test_df.shape\cb1 \
+}
